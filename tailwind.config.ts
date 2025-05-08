@@ -1,7 +1,7 @@
 
-import type { Config } from "tailwindcss";
+import { defineConfig } from "tailwindcss";
 
-const config = {
+export default defineConfig({
   darkMode: ["class"],
   content: [
     './pages/**/*.{ts,tsx}',
@@ -9,7 +9,6 @@ const config = {
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
   ],
-  prefix: "",
   theme: {
     container: {
       center: true,
@@ -53,13 +52,30 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Кастомные цвета для сайта NikitosNS
-        nikitos: {
-          primary: "#9b87f5",    // Основной фиолетовый
-          secondary: "#7E69AB",  // Фиолетовый темнее
-          accent: "#F97316",     // Оранжевый акцент
-          dark: "#1A1F2C",       // Темный фон
-        }
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+        },
+        "sidebar-primary": {
+          DEFAULT: "hsl(var(--sidebar-primary))",
+          foreground: "hsl(var(--sidebar-primary-foreground))",
+        },
+        "sidebar-accent": {
+          DEFAULT: "hsl(var(--sidebar-accent))",
+          foreground: "hsl(var(--sidebar-accent-foreground))",
+        },
+        "sidebar-muted": {
+          DEFAULT: "hsl(var(--sidebar-muted))",
+          foreground: "hsl(var(--sidebar-muted-foreground))",
+        },
+        "sidebar-border": "hsl(var(--sidebar-border))",
+        "sidebar-ring": "hsl(var(--sidebar-ring))",
+        
+        // Nikitos colors
+        "nikitos-dark": "hsl(var(--nikitos-dark))",
+        "nikitos-primary": "hsl(var(--nikitos-primary))",
+        "nikitos-secondary": "hsl(var(--nikitos-secondary))",
+        "nikitos-accent": "hsl(var(--nikitos-accent))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -83,6 +99,4 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-} satisfies Config
-
-export default config
+});

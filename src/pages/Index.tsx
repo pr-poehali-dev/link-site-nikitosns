@@ -3,52 +3,163 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Icon from "@/components/ui/icon";
+import Cat from "@/components/Cat";
 
 const Index = () => {
   const [contactName, setContactName] = useState("");
   const [contactMessage, setContactMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  
+  // Refs для скролла к секциям
+  const socialRef = useRef<HTMLDivElement>(null);
+  const projectsRef = useRef<HTMLDivElement>(null);
+  const contactRef = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Отслеживание активной секции при скролле
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 100;
+      
+      // Проверяем каждую секцию
+      const sections = [
+        { id: 'social', ref: socialRef },
+        { id: 'projects', ref: projectsRef },
+        { id: 'contact', ref: contactRef },
+        { id: 'about', ref: aboutRef }
+      ];
+      
+      // Находим активную секцию
+      for (const section of sections) {
+        if (section.ref.current) {
+          const offsetTop = section.ref.current.offsetTop;
+          const offsetHeight = section.ref.current.offsetHeight;
+          
+          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+            setActiveSection(section.id);
+            break;
+          }
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Функция для отправки сообщения Telegram боту
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!contactName || !contactMessage) return;
+    
     setIsSubmitting(true);
     
-    // Имитация отправки (в реальном проекте здесь был бы API-запрос)
-    setTimeout(() => {
-      setIsSubmitting(false);
+    const BOT_TOKEN = "7716422574:AAHBFc8ZcW5dPTo-AxRaOCi3sIWCv7o0Bxc";
+    const CHAT_ID = "@NikitosNSHelpsRobot"; // Замените на нужный chat_id
+    
+    const message = `Сообщение с сайта!\nИмя: ${contactName}\nСообщение: ${contactMessage}`;
+    
+    try {
+      // Перенаправляем пользователя прямо в бота с предзаполненным сообщением
+      const encodedMessage = encodeURIComponent(message);
+      const telegramUrl = `https://t.me/NikitosNSHelpsRobot?start=${encodedMessage}`;
+      
+      window.open(telegramUrl, '_blank');
+      
       setSubmitted(true);
       setContactName("");
       setContactMessage("");
       
       // Сброс состояния успешной отправки через 3 секунды
       setTimeout(() => setSubmitted(false), 3000);
-    }, 1000);
+    } catch (error) {
+      console.error("Ошибка при отправке сообщения:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-nikitos-dark text-white">
+    <div className="min-h-screen bg-nikitos-dark text-white relative">
       {/* Градиентный фон с эффектом шума */}
       <div className="absolute inset-0 bg-gradient-to-b from-nikitos-dark to-nikitos-secondary/20 opacity-50 z-0" />
       
+      {/* Анимированный котик */}
+      <Cat />
+      
+      {/* Навигационные кнопки */}
+      <nav className="sticky top-0 z-30 backdrop-blur-md bg-nikitos-dark/80 border-b border-nikitos-primary/20 shadow-md">
+        <div className="container max-w-3xl mx-auto px-4 py-3 flex items-center justify-between overflow-x-auto space-x-2 sm:space-x-4">
+          <Button 
+            variant="ghost" 
+            onClick={() => scrollToSection(aboutRef)}
+            className={`whitespace-nowrap ${activeSection === 'about' ? 'bg-nikitos-primary/20 text-white' : 'text-gray-300'}`}
+          >
+            <Icon name="User" className="mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Обо мне</span>
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            onClick={() => scrollToSection(socialRef)}
+            className={`whitespace-nowrap ${activeSection === 'social' ? 'bg-nikitos-primary/20 text-white' : 'text-gray-300'}`}
+          >
+            <Icon name="Share2" className="mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Социальные сети</span>
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            onClick={() => scrollToSection(projectsRef)}
+            className={`whitespace-nowrap ${activeSection === 'projects' ? 'bg-nikitos-primary/20 text-white' : 'text-gray-300'}`}
+          >
+            <Icon name="Briefcase" className="mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Мои проекты</span>
+          </Button>
+          
+          <Button 
+            variant="ghost" 
+            onClick={() => scrollToSection(contactRef)}
+            className={`whitespace-nowrap ${activeSection === 'contact' ? 'bg-nikitos-primary/20 text-white' : 'text-gray-300'}`}
+          >
+            <Icon name="MessageSquare" className="mr-2 h-4 w-4" />
+            <span className="hidden sm:inline">Связаться со мной</span>
+          </Button>
+        </div>
+      </nav>
+      
       <div className="container max-w-3xl mx-auto px-4 py-8 relative z-10">
         {/* Профиль */}
-        <div className="flex flex-col items-center mb-10 animate-fade-in">
-          <div className="w-24 h-24 rounded-full bg-gradient-to-br from-nikitos-primary to-nikitos-accent flex items-center justify-center text-white text-2xl font-bold mb-4 shadow-lg hover:shadow-nikitos-primary/30 transition-shadow">
-            <span>NS</span>
+        <div ref={aboutRef} className="flex flex-col md:flex-row items-center gap-6 mb-12 animate-fade-in">
+          <div className="shrink-0">
+            <img 
+              src="https://i.postimg.cc/qR8RpxXF/photo-2025-05-08-17-32-20.jpg" 
+              alt="NikitosNS" 
+              className="w-40 h-40 object-cover rounded-full border-4 border-nikitos-primary shadow-lg shadow-nikitos-primary/30"
+            />
           </div>
           
-          <h1 className="text-3xl font-bold mb-2">NikitosNS</h1>
-          <p className="text-center text-gray-300 max-w-md">
-            Привет! Я Никита, очень позитивный человек. Имею много историй и люблю их рассказывать!
-          </p>
+          <div className="text-center md:text-left">
+            <h1 className="text-3xl font-bold mb-2 animate-typing">NikitosNS</h1>
+            <p className="text-gray-300 max-w-md animate-typing-delayed">
+              Привет! Я Никита, очень позитивный человек. Имею много историй и люблю их рассказывать!
+            </p>
+          </div>
         </div>
         
         {/* Социальные сети */}
-        <div className="grid gap-3 mb-8">
-          <h2 className="text-xl font-bold mb-2 text-center">Социальные сети</h2>
+        <div ref={socialRef} className="grid gap-3 mb-12">
+          <h2 className="text-xl font-bold mb-2 text-center animate-typing-delayed-2">Социальные сети</h2>
           
           <SocialLinkCard 
             icon="MessageSquare" 
@@ -62,9 +173,8 @@ const Index = () => {
             icon="MessageSquare" 
             title="Telegram (приватка)"
             subtitle="Приватный канал"
-            url="#"
+            url="https://t.me/PrivateNSRobot"
             color="bg-[#229ED9]"
-            isLocked
           />
           
           <SocialLinkCard 
@@ -87,16 +197,15 @@ const Index = () => {
           <SocialLinkCard 
             icon="Video" 
             title="TikTok (личный)"
-            subtitle="Мой TikTok"
-            url="#"
+            subtitle="@nikitosns.happy"
+            url="https://www.tiktok.com/@nikitosns.happy?_t=ZP-8wBbUyOEo7K&_r=1"
             color="bg-[#000000]"
-            isLocked
           />
         </div>
         
         {/* Проекты */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4 text-center">Мои проекты</h2>
+        <div ref={projectsRef} className="mb-12">
+          <h2 className="text-xl font-bold mb-4 text-center animate-typing-delayed-3">Мои проекты</h2>
           
           <div className="grid gap-4 md:grid-cols-2">
             <ProjectCard 
@@ -127,7 +236,7 @@ const Index = () => {
         </div>
         
         {/* Мерч */}
-        <div className="mb-12">
+        <div className="mb-12 animate-fade-in">
           <Card className="bg-gradient-to-br from-nikitos-dark to-nikitos-dark/70 border border-nikitos-primary/30 shadow-lg hover:shadow-nikitos-primary/20 transition-all">
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row gap-4 items-center">
@@ -136,8 +245,8 @@ const Index = () => {
                 </div>
                 
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold mb-2">Мой мерч</h3>
-                  <p className="text-gray-300 mb-4">Эксклюзивная одежда и аксессуары для настоящих фанатов</p>
+                  <h3 className="text-xl font-bold mb-2 animate-typing-delayed-4">Мой мерч</h3>
+                  <p className="text-gray-300 mb-4 animate-typing-delayed-5">Эксклюзивная одежда и аксессуары для настоящих фанатов</p>
                   
                   <Button 
                     className="w-full bg-nikitos-accent hover:bg-nikitos-accent/80 text-white"
@@ -153,8 +262,8 @@ const Index = () => {
         </div>
         
         {/* Контактная форма */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4 text-center">Связаться со мной</h2>
+        <div ref={contactRef} className="mb-8">
+          <h2 className="text-xl font-bold mb-4 text-center animate-typing-delayed-6">Связаться со мной</h2>
           
           <Card className="bg-gradient-to-br from-nikitos-dark to-nikitos-dark/70 border border-nikitos-primary/30 shadow-lg">
             <CardContent className="p-6">
@@ -222,7 +331,7 @@ const Index = () => {
         </div>
         
         {/* Футер */}
-        <footer className="text-center text-gray-400 text-sm mt-12">
+        <footer className="text-center text-gray-400 text-sm mt-12 animate-fade-in">
           <p>© {new Date().getFullYear()} NikitosNS. Все права защищены.</p>
         </footer>
       </div>
@@ -245,7 +354,7 @@ const SocialLinkCard = ({ icon, title, subtitle, url, color, isLocked = false }:
       href={isLocked ? "#" : url} 
       target={isLocked ? "_self" : "_blank"} 
       rel="noopener noreferrer"
-      className={`block ${isLocked ? 'cursor-not-allowed opacity-80' : 'hover:scale-[1.01] hover:shadow-lg'} transition-all`}
+      className={`block ${isLocked ? 'cursor-not-allowed opacity-80' : 'hover:scale-[1.01] hover:shadow-lg'} transition-all animate-fade-in`}
     >
       <div className="flex items-center gap-4 p-4 rounded-lg bg-white/5 border border-white/10 transition-all">
         <div className={`${color} w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0`}>
@@ -280,7 +389,7 @@ type ProjectCardProps = {
 
 const ProjectCard = ({ title, description, url, isDevelopment = false }: ProjectCardProps) => {
   return (
-    <Card className="overflow-hidden group bg-gradient-to-br from-nikitos-dark to-nikitos-dark/70 border border-nikitos-primary/30 shadow-lg hover:shadow-nikitos-primary/20 transition-all">
+    <Card className="overflow-hidden group bg-gradient-to-br from-nikitos-dark to-nikitos-dark/70 border border-nikitos-primary/30 shadow-lg hover:shadow-nikitos-primary/20 transition-all animate-fade-in">
       <CardContent className="p-6">
         <div className="mb-4">
           <div className="flex justify-between items-start">

@@ -45,6 +45,11 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    --nikitos-dark: 224 24% 14%;
+    --nikitos-primary: 257 83% 75%;
+    --nikitos-secondary: 224 24% 21%;
+    --nikitos-accent: 25 100% 53%;
   }
 
   .dark {
@@ -93,6 +98,7 @@
   
   html {
     font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
   }
 
   body {
@@ -114,5 +120,86 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+  
+  /* Анимация медленного появления текста */
+  .animate-typing {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid transparent;
+    width: 0;
+    animation: typing 1s steps(20, end) forwards;
+  }
+  
+  .animate-typing-delayed {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid transparent;
+    width: 0;
+    animation: typing 1.5s steps(40, end) forwards;
+    animation-delay: 0.5s;
+  }
+  
+  .animate-typing-delayed-2 {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid transparent;
+    width: 0;
+    animation: typing 1s steps(20, end) forwards;
+    animation-delay: 1s;
+  }
+  
+  .animate-typing-delayed-3 {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid transparent;
+    width: 0;
+    animation: typing 1s steps(20, end) forwards;
+    animation-delay: 1.5s;
+  }
+  
+  .animate-typing-delayed-4 {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid transparent;
+    width: 0;
+    animation: typing 1s steps(20, end) forwards;
+    animation-delay: 2s;
+  }
+  
+  .animate-typing-delayed-5 {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid transparent;
+    width: 0;
+    animation: typing 1.5s steps(40, end) forwards;
+    animation-delay: 2.5s;
+  }
+  
+  .animate-typing-delayed-6 {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid transparent;
+    width: 0;
+    animation: typing 1s steps(20, end) forwards;
+    animation-delay: 3s;
+  }
+  
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
+  
+  /* Анимация кота */
+  .wiggle-tail {
+    animation: wiggleTail 0.5s ease-in-out;
+  }
+  
+  @keyframes wiggleTail {
+    0% { transform: rotate(20deg); }
+    25% { transform: rotate(40deg); }
+    50% { transform: rotate(20deg); }
+    75% { transform: rotate(40deg); }
+    100% { transform: rotate(20deg); }
   }
 }
