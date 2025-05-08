@@ -1,14 +1,16 @@
 
-import { defineConfig } from "tailwindcss";
+import type { Config } from "tailwindcss";
+import { fontFamily } from "tailwindcss/defaultTheme";
 
-export default defineConfig({
+const config: Config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
+  prefix: "",
   theme: {
     container: {
       center: true,
@@ -55,32 +57,25 @@ export default defineConfig({
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
         },
-        "sidebar-primary": {
-          DEFAULT: "hsl(var(--sidebar-primary))",
-          foreground: "hsl(var(--sidebar-primary-foreground))",
-        },
-        "sidebar-accent": {
-          DEFAULT: "hsl(var(--sidebar-accent))",
-          foreground: "hsl(var(--sidebar-accent-foreground))",
-        },
-        "sidebar-muted": {
-          DEFAULT: "hsl(var(--sidebar-muted))",
-          foreground: "hsl(var(--sidebar-muted-foreground))",
-        },
-        "sidebar-border": "hsl(var(--sidebar-border))",
-        "sidebar-ring": "hsl(var(--sidebar-ring))",
-        
-        // Nikitos colors
-        "nikitos-dark": "hsl(var(--nikitos-dark))",
-        "nikitos-primary": "hsl(var(--nikitos-primary))",
-        "nikitos-secondary": "hsl(var(--nikitos-secondary))",
-        "nikitos-accent": "hsl(var(--nikitos-accent))",
+        "nikitos-dark": "#1A1F2C",
+        "nikitos-primary": "#9b87f5",
+        "nikitos-secondary": "#2A3040",
+        "nikitos-accent": "#F97316",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        sans: ["Inter", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
@@ -99,4 +94,6 @@ export default defineConfig({
     },
   },
   plugins: [require("tailwindcss-animate")],
-});
+};
+
+export default config;
